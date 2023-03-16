@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 import styles from '../styles/Home.module.css';
-
+import { getSession } from 'next-auth/react';
 const url = 'http://localhost:3000/api/task';
 
 export default function Home(props) {
@@ -69,63 +69,97 @@ export default function Home(props) {
   };
 
   return (
-    <main className={styles.main}>
-      <h1 className={styles.heading}>TO-DO</h1>
-      <div className={styles.container}>
-        <form onSubmit={addTask} className={styles.form_container}>
-          <input
-            className={styles.input}
-            type='text'
-            placeholder='Task to be done...'
-            onChange={handleChange}
-            value={task.task}
-          />
-          <button type='submit' className={styles.submit_btn}>
-            {task._id ? 'Update' : 'Add'}
-          </button>
-        </form>
-        {tasks.map((task) => (
-          <div className={styles.task_container} key={task._id}>
-            <input
-              type='checkbox'
-              className={styles.check_box}
-              checked={task.completed}
-              onChange={() => updateTask(task._id)}
-            />
-            <p
-              className={
-                task.completed
-                  ? styles.task_text + ' ' + styles.line_through
-                  : styles.task_text
-              }
-            >
-              {task.task}
-            </p>
-            <button
-              onClick={() => editTask(task._id)}
-              className={styles.edit_task}
-            >
-              &#9998;
-            </button>
-            <button
-              onClick={() => deleteTask(task._id)}
-              className={styles.remove_task}
-            >
-              &#10006;
-            </button>
+    <>
+      {
+        <main className={styles.main}>
+          <h1 className={styles.heading}>Shopping List</h1>
+          <div className={styles.container}>
+            <form onSubmit={addTask} className={styles.form_container}>
+              <input
+                className={styles.input}
+                type='text'
+                placeholder='Add shopping list item...'
+                onChange={handleChange}
+                value={task.task}
+              />
+              <button type='submit' className={styles.submit_btn}>
+                {task._id ? 'Update' : 'Add'}
+              </button>
+            </form>
+            {tasks.map((task) => (
+              <div className={styles.task_container} key={task._id}>
+                <input
+                  type='checkbox'
+                  className={styles.check_box}
+                  checked={task.completed}
+                  onChange={() => updateTask(task._id)}
+                />
+                <p
+                  className={
+                    task.completed
+                      ? styles.task_text + ' ' + styles.line_through
+                      : styles.task_text
+                  }
+                >
+                  {task.task}
+                </p>
+                <button
+                  onClick={() => editTask(task._id)}
+                  className={styles.edit_task}
+                >
+                  &#9998;
+                </button>
+                <button
+                  onClick={() => deleteTask(task._id)}
+                  className={styles.remove_task}
+                >
+                  &#10006;
+                </button>
+              </div>
+            ))}
+            {tasks.length === 0 && (
+              <h2 className={styles.no_tasks}>No tasks</h2>
+            )}
           </div>
-        ))}
-        {tasks.length === 0 && <h2 className={styles.no_tasks}>No tasks</h2>}
-      </div>
-    </main>
+        </main>
+      }
+    </>
   );
 }
 
-export const getServerSideProps = async () => {
+export const getServerSideProps = async (context) => {
+  const session = await getSession({ req: context.req });
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: '/auth',
+        permanent: false,
+      },
+    };
+  }
   const { data } = await axios.get(url);
   return {
     props: {
       tasks: data.data,
+      session,
     },
   };
 };
+
+// export async function getServerSideProps(context) {
+//   const session = await getSession({ req: context.req });
+
+//   if (!session) {
+//     return {
+//       redirect: {
+//         destination: '/auth',
+//         permanent: false,
+//       },
+//     };
+//   }
+
+//   return {
+//     props: { session },
+//   };
+// }
