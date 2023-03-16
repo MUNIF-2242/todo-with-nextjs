@@ -14,7 +14,7 @@ function MainNavigation() {
   return (
     <header className={classes.header}>
       <Link className={classes.logo} href='/'>
-        NextJS
+        Shopify
       </Link>
       <nav>
         <ul>

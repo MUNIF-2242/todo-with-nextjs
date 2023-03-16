@@ -7,7 +7,8 @@ function UserProfile() {
   return (
     <section className={classes.profile}>
       <h1>User Profile</h1>
-      <ProfileForm />
+      <p>This page is under development...</p>
+      {/* <ProfileForm /> */}
     </section>
   );
 }
