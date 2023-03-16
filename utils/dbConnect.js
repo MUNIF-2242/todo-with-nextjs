@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 const DB_URL =
-  'mongodb+srv://sbh2242:sbh2242@cluster0.5uegfsp.mongodb.net/?retryWrites=true&w=majority';
+  'mongodb+srv://sbh2242:sbh2242@cluster0.5uegfsp.mongodb.net/todo-app-wth-auth?retryWrites=true&w=majority';
 
 //const DB_URL = process.env.DB_URL;
 
